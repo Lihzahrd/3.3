@@ -56,7 +56,7 @@ var beepbox;
     ]);
     Config.blackKeyNameParents = [-1, 1, -1, 1, -1, 1, -1, -1, 1, -1, 1, -1];
     Config.tempoMin = 30;
-    Config.tempoMax = 300;
+    Config.tempoMax = 500;
     Config.reverbRange = 4;
     Config.beatsPerBarMin = 3;
     Config.beatsPerBarMax = 16;
@@ -65,7 +65,7 @@ var beepbox;
     Config.patternsPerChannelMin = 1;
     Config.patternsPerChannelMax = 64;
     Config.instrumentsPerChannelMin = 1;
-    Config.instrumentsPerChannelMax = 10;
+    Config.instrumentsPerChannelMax = 64;
     Config.partsPerBeat = 24;
     Config.ticksPerPart = 2;
     Config.rhythms = toNameMap([
@@ -229,9 +229,9 @@ var beepbox;
     Config.harmonicsWavelength = 1 << 11;
     Config.pulseWidthRange = 8;
     Config.pitchChannelCountMin = 1;
-    Config.pitchChannelCountMax = 6;
+    Config.pitchChannelCountMax = 12;
     Config.noiseChannelCountMin = 0;
-    Config.noiseChannelCountMax = 3;
+    Config.noiseChannelCountMax = 4;
     Config.noiseInterval = 6;
     Config.drumCount = 12;
     Config.pitchOctaves = 7;
@@ -599,6 +599,9 @@ var beepbox;
                 { name: "breathing", midiProgram: 126, isNoise: true, midiSubharmonicOctaves: -1, settings: { "type": "spectrum", "effects": "reverb", "transition": "hard fade", "chord": "harmony", "filterCutoffHz": 2000, "filterResonance": 14, "filterEnvelope": "swell 2", "spectrum": [14, 14, 14, 29, 29, 29, 29, 29, 43, 29, 29, 43, 43, 43, 29, 29, 71, 43, 86, 86, 57, 100, 86, 86, 86, 86, 71, 86, 71, 57] } },
                 { name: "klaxon synth", midiProgram: 125, isNoise: true, midiSubharmonicOctaves: -1, settings: { "type": "noise", "effects": "reverb", "transition": "slide", "chord": "harmony", "filterCutoffHz": 2000, "filterResonance": 86, "filterEnvelope": "steady", "wave": "buzz" } },
             ]) },
+        { name: "Modded Presets", presets: beepbox.toNameMap([
+                { name: "theepsynth", midiProgram: 124, generalMidi: true, settings: { "type": "FM", "effects": "none", "transition": "hard", "chord": "arpeggio", "filterCutoffHz": 4000, "filterResonance": 14, "filterEnvelope": "custom", "vibrato": "none", "algorithm": "1←3 2←4", "feedbackType": "1⟲ 2⟲", "feedbackAmplitude": 11, "feedbackEnvelope": "steady", "operators": [{ "frequency": "1×", "amplitude": 15, "envelope": "custom" }, { "frequency": "1×", "amplitude": 15, "envelope": "custom" }, { "frequency": "2×", "amplitude": 7, "envelope": "steady" }, { "frequency": "1×", "amplitude": 11, "envelope": "steady" }] } },
+            ]) },
     ]);
     EditorConfig.pitchColors = beepbox.toNameMap([
         { name: "cyan", channelDim: "#0099a1", channelBright: "#25f3ff", noteDim: "#0099a1", noteBright: "#25f3ff" },
@@ -607,11 +610,18 @@ var beepbox;
         { name: "green", channelDim: "#c75000", channelBright: "#ff9752", noteDim: "#c75000", noteBright: "#ff9752" },
         { name: "purple", channelDim: "#d020d0", channelBright: "#ff90ff", noteDim: "#d020d0", noteBright: "#ff90ff" },
         { name: "blue", channelDim: "#492184", channelBright: "#7500c4", noteDim: "#492184", noteBright: "#7500c4" },
+        { name: "cyan2", channelDim: "#221b89", channelBright: "#1000ff", noteDim: "#221b89", noteBright: "#1000ff" },
+        { name: "yellow2", channelDim: "#00995f", channelBright: "#00ff9f", noteDim: "#00995f", noteBright: "#00ff9f" },
+        { name: "orange2", channelDim: "#d6b03e", channelBright: "#ffbf00", noteDim: "#d6b03e", noteBright: "#ffbf00" },
+        { name: "green2", channelDim: "#b25915", channelBright: "#d85d00", noteDim: "#b25915", noteBright: "#d85d00" },
+        { name: "purple2", channelDim: "#891a60", channelBright: "#ff00a1", noteDim: "#891a60", noteBright: "#ff00a1" },
+        { name: "blue2", channelDim: "#965cbc", channelBright: "#c26afc", noteDim: "#965cbc", noteBright: "#c26afc" },
     ]);
     EditorConfig.noiseColors = beepbox.toNameMap([
         { name: "gray", channelDim: "#991010", channelBright: "#ff1616", noteDim: "#991010", noteBright: "#ff1616" },
         { name: "brown", channelDim: "#aaaaaa", channelBright: "#ffffff", noteDim: "#aaaaaa", noteBright: "#ffffff" },
         { name: "azure", channelDim: "#5869BD", channelBright: "#768dfc", noteDim: "#5869BD", noteBright: "#768dfc" },
+		{ name: "azure2", channelDim: "#7c9b42", channelBright: "#a5ff00", noteDim: "#7c9b42", noteBright: "#a5ff00" },
     ]);
     beepbox.EditorConfig = EditorConfig;
 })(beepbox || (beepbox = {}));
@@ -12327,7 +12337,7 @@ var beepbox;
             this._nextBarButton = button({ className: "nextBarButton", style: "width: 40px;", type: "button", title: "Next Bar (right bracket)" });
             this._volumeSlider = input({ title: "main volume", style: "width: 5em; flex-grow: 1; margin: 0;", type: "range", min: "0", max: "100", value: "50", step: "1" });
             this._fileMenu = select({ style: "width: 100%;" }, option({ selected: true, disabled: true, hidden: false }, "File"), option({ value: "new" }, "+ New Blank Song"), option({ value: "import" }, "↑ Import..."), option({ value: "export" }, "↓ Export..."));
-            this._editMenu = select({ style: "width: 100%;" }, option({ selected: true, disabled: true, hidden: false }, "Edit"), option({ value: "undo" }, "Undo (Z)"), option({ value: "redo" }, "Redo (Y)"), option({ value: "copy" }, "Copy Pattern Notes (C)"), option({ value: "paste" }, "Paste Pattern Notes (V)"), option({ value: "transposeUp" }, "Move Pattern Notes Up (+)"), option({ value: "transposeDown" }, "Move Pattern Notes Down (-)"), option({ value: "forceScale" }, "Force All Notes To Scale"), option({ value: "forceRhythm" }, "Force All Notes To Rhythm"), option({ value: "moveNotesSideways" }, "Move All Notes Sideways..."), option({ value: "beatsPerBar" }, "Change Beats Per Bar..."), option({ value: "barCount" }, "Change Song Length..."), option({ value: "channelSettings" }, "Channel Settings..."), option({ value: "detectKey" }, "Detect Key"));
+            this._editMenu = select({ style: "width: 100%;" }, option({ selected: true, disabled: true, hidden: false }, "Edit"), option({ value: "undo" }, "Undo (Z)"), option({ value: "redo" }, "Redo (Y)"), option({ value: "copy" }, "Copy Pattern Notes (C)"), option({ value: "paste" }, "Paste Pattern Notes (V)"), option({ value: "cut" }, "Cut Pattern Notes (X)"), option({ value: "transposeUp" }, "Move Pattern Notes Up (+)"), option({ value: "transposeDown" }, "Move Pattern Notes Down (-)"), option({ value: "forceScale" }, "Force All Notes To Scale"), option({ value: "forceRhythm" }, "Force All Notes To Rhythm"), option({ value: "moveNotesSideways" }, "Move All Notes Sideways..."), option({ value: "beatsPerBar" }, "Change Beats Per Bar..."), option({ value: "barCount" }, "Change Song Length..."), option({ value: "channelSettings" }, "Channel Settings..."), option({ value: "detectKey" }, "Detect Key"));
             this._optionsMenu = select({ style: "width: 100%;" }, option({ selected: true, disabled: true, hidden: false }, "Preferences"), option({ value: "autoPlay" }, "Auto Play On Load"), option({ value: "autoFollow" }, "Auto Follow Track"), option({ value: "showLetters" }, "Show Piano Keys"), option({ value: "showFifth" }, 'Highlight "Fifth" Notes'), option({ value: "showChannels" }, "Show All Channels"), option({ value: "showScrollBar" }, "Octave Scroll Bar"), option({ value: "alwaysShowSettings" }, "Customize All Instruments"));
             this._scaleSelect = buildOptions(select(), beepbox.Config.scales.map(scale => scale.name));
             this._keySelect = buildOptions(select(), beepbox.Config.keys.map(key => key.name).reverse());
@@ -12679,6 +12689,10 @@ var beepbox;
                         this._paste();
                         event.preventDefault();
                         break;
+                    case 88:
+                        this._cut();
+                        event.preventDefault();
+                        break;
                     case 73:
                         if (event.shiftKey) {
                             const instrument = this._doc.song.channels[this._doc.channel].instruments[this._doc.getCurrentInstrument()];
@@ -12822,6 +12836,9 @@ var beepbox;
                         break;
                     case "paste":
                         this._paste();
+                        break;
+                    case "cut":
+                        this._cut();
                         break;
                     case "transposeUp":
                         this._transpose(true);
@@ -13066,6 +13083,23 @@ var beepbox;
                 this._doc.record(new beepbox.ChangePaste(this._doc, pattern, patternCopy["notes"], patternCopy["beatsPerBar"]));
             }
         }
+        _cut() {
+            const pattern = this._doc.getCurrentPattern();
+            const patternCut = {
+                notes: [],
+                beatsPerBar: this._doc.song.beatsPerBar,
+                drums: this._doc.song.getChannelIsNoise(this._doc.channel),
+            };
+            const patternCopy = {
+                notes: pattern.notes,
+                beatsPerBar: this._doc.song.beatsPerBar,
+                drums: this._doc.song.getChannelIsNoise(this._doc.channel),
+            };
+			window.localStorage.setItem("patternCopy", JSON.stringify(patternCopy));
+            if (patternCut != null && patternCut["drums"] == this._doc.song.getChannelIsNoise(this._doc.channel)) {
+                this._doc.record(new beepbox.ChangePaste(this._doc, pattern, patternCut.notes, patternCut.beatsPerBar, patternCut.partsPerBeat));
+            }
+        };
         _copyInstrument() {
             const channel = this._doc.song.channels[this._doc.channel];
             const instrument = channel.instruments[this._doc.getCurrentInstrument()];
